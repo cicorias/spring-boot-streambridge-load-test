@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-WebApplication<web>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "stream.load.web.WebApplication",
+            "projectName": "web",
+            "args": ""
+        }
+    ]
+}
