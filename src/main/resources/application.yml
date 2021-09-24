@@ -1,3 +1,59 @@
 spring:
     application:
         name: stream-test
+
+
+    cloud:
+        stream:
+            bindings:
+                left:
+                    destination: queue.log.left
+                    binder: rabbit0
+                    producer:
+                        partitionKeyExpression: payload.data.altkey1
+                        partitionCount: 2
+                right:
+                    destination: queue.log.right
+                    binder: rabbit0
+                    producer:
+                        partitionKeyExpression: payload.altkey2
+                        partitionCount: 2
+                nowhere:
+                    destination: queue.log.nowhere
+                    binder: rabbit0
+                    producer:
+                        partitionKeyExpression: payload.correlationId
+                        partitionCount: 2
+
+            binders:
+                rabbit0:
+                    type: rabbit
+                    environment:
+                        spring:
+                            rabbitmq:
+                                host: localhost
+                                port: 5672
+                                username: guest
+                                password: guest
+                                virtual-host: /
+                # rabbit1:
+                #     type: rabbit
+                #     environment:
+                #         spring:
+                #             rabbitmq:
+                #                 host: localhost
+                #                 port: 5673
+                #                 username: guest
+                #                 password: guest
+                #                 virtual-host: /
+                # rabbit2:
+                #     type: rabbit
+                #     environment:
+                #         spring:
+                #             rabbitmq:
+                #                 host: localhost
+                #                 port: 5674
+                #                 username: guest
+                #                 password: guest
+                #                 virtual-host: /
+
