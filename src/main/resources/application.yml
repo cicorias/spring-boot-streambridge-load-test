@@ -4,6 +4,8 @@ spring:
 
 
     cloud:
+        function:
+            definition: outputleft;outputright;outputnowhere
         stream:
             bindings:
                 left:
@@ -18,12 +20,19 @@ spring:
                     producer:
                         partitionKeyExpression: payload.altkey2
                         partitionCount: 2
+                        headerMode: headers
                 nowhere:
                     destination: queue.log.nowhere
                     binder: rabbit0
                     producer:
                         partitionKeyExpression: payload.correlationId
                         partitionCount: 2
+                outputleft-in-0:
+                    destination: queue.log.left
+                outputright-in-0:
+                    destination: queue.log.right
+                outputnowhere-in-0:
+                    destination: queue.log.nowhere
 
             binders:
                 rabbit0:

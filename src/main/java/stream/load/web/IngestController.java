@@ -36,7 +36,11 @@ public class IngestController {
       String binding = jsonPayload.at("/data/direction").asText("nowhere");
       int ackValue = jsonPayload.at("/ack").asInt(-1);
       String correlationId = jsonPayload.at("/correlationId").asText("no-correlation");
-      logger.info("using binding={} for correlationId={}", binding, correlationId);
+      int expectedPartitionId = preCalculatePartitionId("foo", 2);
+
+      // TODO: this only pre-calc based upon left/right/nowhere
+      // TODO: put this in the consumer and verify based upon logic.
+      logger.info("using binding={} for correlationId={} partitionId={}", binding, correlationId, expectedPartitionId);
 
       sendMessage(binding, jsonPayload, correlationId);
 
@@ -55,8 +59,13 @@ public class IngestController {
   }
 
   void sendMessage(String bindingName, JsonNode data, String partitionKey) {
-    Message<?> message = MessageBuilder.withPayload(data).build();// TODO: future but not in repro.setHeader("partitionKey", partitionKey).build();
+    Message<JsonNode> message = MessageBuilder.withPayload(data).build();// TODO: future but not in repro.setHeader("partitionKey", partitionKey).build();
+    // Message<JsonNode> message = MessageBuilder.withPayload(data).setHeader("partitionKey", partitionKey).build();
     streamBridge.send(bindingName, message);
+  }
+
+  int preCalculatePartitionId(String s, int partitionCount) {
+    return Math.abs(s.hashCode()) % partitionCount;
   }
 
 }
